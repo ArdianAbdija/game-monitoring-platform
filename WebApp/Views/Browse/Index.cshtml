@@ -1,0 +1,208 @@
+@* This Razor view displays the public game browsing page with search, filtering, pagination, and game cards. *@
+@model IEnumerable<WebApp.ViewModels.GameViewModel>
+
+@{
+    ViewData["Title"] = "Browse Games";
+}
+
+<h1>Browse Games</h1>
+
+<form asp-action="Index" method="get" class="row g-3 mb-4">
+    <div class="col-md-5">
+        <input type="text"
+               name="search"
+               value="@ViewBag.Search"
+               class="form-control"
+               placeholder="Search games..." />
+    </div>
+
+    <div class="col-md-4">
+        <select name="gameTypeId" class="form-select" asp-items="ViewBag.GameTypes">
+            <option value="">All game types</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">
+            Search
+        </button>
+    </div>
+</form>
+
+<div class="row">
+    @foreach (var game in Model)
+    {
+        var approvedReviewImages = game.Reviews
+        .Where(r => r.Approved && r.ReviewImages != null)
+        .SelectMany(r => r.ReviewImages)
+        .ToList();
+
+        string carouselId = "gameImageCarousel" + game.Id;
+        var approvedReviewCount = game.Reviews.Count(r => r.Approved);
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 game-card clickable-game-card"
+                 data-details-url="@Url.Action("Details", "Browse", new { id = game.Id })"
+                 tabindex="0"
+                 role="link"
+                 aria-label="View details for @game.Name">
+
+                @if (approvedReviewImages.Any())
+                {
+                    <div id="@carouselId" class="carousel slide game-card-carousel" data-bs-ride="false">
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < approvedReviewImages.Count; i++)
+                            {
+                                var image = approvedReviewImages[i];
+
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@image.Url"
+                                         class="d-block w-100 game-card-image"
+                                         alt="User review image" />
+                                </div>
+                            }
+                        </div>
+
+                        @if (approvedReviewImages.Count > 1)
+                        {
+                            <button class="carousel-control-prev"
+                                    type="button"
+                                    data-bs-target="#@carouselId"
+                                    data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+
+                            <button class="carousel-control-next"
+                                    type="button"
+                                    data-bs-target="#@carouselId"
+                                    data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        }
+
+                        <div class="game-image-count">
+                            @approvedReviewImages.Count image@(approvedReviewImages.Count == 1 ? "" : "s")
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="game-card-placeholder">
+                        No review images yet
+                    </div>
+                }
+
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">@game.Name</h5>
+
+                <div class="game-average-rating mb-2">
+                    @if (game.AverageRating.HasValue && approvedReviewCount > 0)
+    {
+                            <span class="rating-star" aria-hidden="true">&#9733;</span>
+                    <span>@game.AverageRating.Value.ToString("0.0") / 10</span>
+                    <small>(@approvedReviewCount review@(approvedReviewCount == 1 ? "" : "s"))</small>
+    }
+    else
+    {
+                    <span class="no-rating">No ratings yet</span>
+    }
+                </div>
+
+                <p class="card-text">
+                    @game.Description
+                </p>
+
+                <p>
+                    <strong>Developer:</strong> @game.Developer
+                </p>
+
+                <p>
+                    <strong>Type:</strong> @game.GameTypeName
+                </p>
+
+                <p>
+                    <strong>Genres:</strong>
+                    @if (game.Genres.Any())
+                        {
+                            @string.Join(", ", game.Genres.Select(g => g.Name));
+                        }
+                        else
+                        {
+                    <span>No genres assigned</span>
+                        }
+                </p>
+
+                <a asp-action="Details"
+                   asp-route-id="@game.Id"
+                   class="btn btn-primary mt-auto">
+                    View Details
+                </a>
+            </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (ViewBag.TotalPages > 1)
+{
+    <nav class="mt-4">
+        <ul class="pagination">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(ViewBag.CurrentPage - 1)"
+                       asp-route-search="@ViewBag.Search"
+                       asp-route-gameTypeId="@ViewBag.GameTypeId">
+                        Previous
+                    </a>
+                </li>
+            }
+
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Page @ViewBag.CurrentPage of @ViewBag.TotalPages
+                </span>
+            </li>
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@(ViewBag.CurrentPage + 1)"
+                       asp-route-search="@ViewBag.Search"
+                       asp-route-gameTypeId="@ViewBag.GameTypeId">
+                        Next
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+@section Scripts {
+    <script>
+        document.querySelectorAll(".clickable-game-card").forEach(function (card) {
+
+            card.addEventListener("click", function (event) {
+                // Do not open the details page when clicking buttons, links, or carousel arrows.
+                if (event.target.closest("a, button, .carousel-control-prev, .carousel-control-next")) {
+                    return;
+                }
+
+                window.location.href = card.dataset.detailsUrl;
+            });
+
+            card.addEventListener("keydown", function (event) {
+                // Allows keyboard users to open the card with Enter or Space.
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    window.location.href = card.dataset.detailsUrl;
+                }
+            });
+        });
+    </script>
+}

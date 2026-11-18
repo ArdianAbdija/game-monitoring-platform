@@ -1,0 +1,483 @@
+html {
+    font-size: 14px;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: linear-gradient(180deg, #1b2838 0%, #101822 100%);
+    color: #c7d5e0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    body > .container {
+        flex: 1 0 auto !important;
+        color: #c7d5e0;
+    }
+
+/* =========================
+   STEAM NAVBAR
+========================= */
+
+.steam-navbar {
+    background-color: #171a21 !important;
+    border-bottom: 1px solid #2a475e !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+    .steam-navbar .navbar-brand {
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+
+    .steam-navbar .nav-link,
+    .steam-navbar .nav-link.text-dark,
+    .steam-navbar span.nav-link {
+        color: #c7d5e0 !important;
+    }
+
+        .steam-navbar .nav-link:hover,
+        .steam-navbar .navbar-brand:hover {
+            color: #66c0f4 !important;
+        }
+
+/* =========================
+   PAGE LAYOUT
+========================= */
+
+.container {
+    color: #c7d5e0;
+}
+
+h1, h2, h3, h4, h5 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+p, label, dt, dd {
+    color: #c7d5e0;
+}
+
+a {
+    color: #66c0f4;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #ffffff;
+        text-decoration: underline;
+    }
+
+/* =========================
+   CARDS / PANELS
+========================= */
+
+.card {
+    background-color: #16202d;
+    border: 1px solid #2a475e;
+    color: #c7d5e0;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+}
+
+    .card-title,
+    .card h4,
+    .card h5 {
+        color: #ffffff;
+    }
+
+.border {
+    border-color: #2a475e !important;
+}
+
+/* =========================
+   FORMS
+========================= */
+
+.form-control,
+.form-select {
+    background-color: #0e151f;
+    color: #c7d5e0;
+    border: 1px solid #2a475e;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        background-color: #0e151f;
+        color: #ffffff;
+        border-color: #66c0f4;
+        box-shadow: 0 0 0 0.2rem rgba(102, 192, 244, 0.25);
+    }
+
+    .form-control::placeholder {
+        color: #8f98a0;
+    }
+
+    .form-control:disabled,
+    .form-control[readonly] {
+        background-color: #263545;
+        color: #c7d5e0;
+    }
+
+.text-danger {
+    color: #ff6b6b !important;
+}
+
+.text-muted {
+    color: #8f98a0 !important;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-primary {
+    background: linear-gradient(90deg, #06bfff 0%, #2d73ff 100%);
+    border: none;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, #66c0f4 0%, #417a9b 100%);
+        color: #ffffff;
+    }
+
+.btn-secondary {
+    background-color: #2a475e;
+    border-color: #66c0f4;
+    color: #c7d5e0;
+}
+
+    .btn-secondary:hover {
+        background-color: #66c0f4;
+        border-color: #66c0f4;
+        color: #171a21;
+    }
+
+.btn-outline-primary {
+    color: #66c0f4;
+    border-color: #66c0f4;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #66c0f4;
+        border-color: #66c0f4;
+        color: #171a21;
+    }
+
+.btn-outline-secondary {
+    color: #c7d5e0;
+    border-color: #8f98a0;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #8f98a0;
+        border-color: #8f98a0;
+        color: #171a21;
+    }
+
+.btn-outline-danger {
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+    .btn-outline-danger:hover {
+        background-color: #ff6b6b;
+        border-color: #ff6b6b;
+        color: #ffffff;
+    }
+
+.btn-warning {
+    background-color: #f5c518;
+    border-color: #f5c518;
+    color: #171a21;
+}
+
+    .btn-warning:hover {
+        background-color: #ffda4a;
+        border-color: #ffda4a;
+        color: #171a21;
+    }
+
+.btn-success {
+    background-color: #5c7e10;
+    border-color: #5c7e10;
+}
+
+    .btn-success:hover {
+        background-color: #75a313;
+        border-color: #75a313;
+    }
+
+/* =========================
+   TABLES
+========================= */
+
+.table {
+    --bs-table-bg: #16202d;
+    --bs-table-color: #c7d5e0;
+    --bs-table-striped-bg: #1b2b3a;
+    --bs-table-striped-color: #ffffff;
+    --bs-table-border-color: #2a475e;
+    color: #c7d5e0;
+    border-color: #2a475e;
+}
+
+    .table thead th {
+        color: #ffffff;
+        background-color: #171a21;
+        border-bottom: 2px solid #66c0f4;
+    }
+
+    .table tbody tr:hover {
+        background-color: #22384a;
+    }
+
+/* =========================
+   BADGES / ALERTS
+========================= */
+
+.badge.bg-success {
+    background-color: #5c7e10 !important;
+}
+
+.badge.bg-warning {
+    background-color: #f5c518 !important;
+    color: #171a21 !important;
+}
+
+.alert-success {
+    background-color: #1f3b24;
+    color: #b8ffb8;
+    border-color: #5c7e10;
+}
+
+.alert-danger {
+    background-color: #3b1f1f;
+    color: #ffb8b8;
+    border-color: #ff6b6b;
+}
+
+/* =========================
+   FOOTER FIX
+========================= */
+
+.footer,
+.steam-footer {
+    position: static !important;
+    bottom: auto !important;
+    width: 100% !important;
+    margin-top: auto !important;
+    line-height: 60px;
+    flex-shrink: 0 !important;
+    background-color: #171a21;
+    color: #8f98a0;
+    border-top: 1px solid #2a475e !important;
+    white-space: nowrap;
+}
+
+    .footer .container,
+    .steam-footer .container {
+        color: #8f98a0;
+    }
+
+/* =========================
+   HOME PAGE HERO
+========================= */
+
+.display-4 {
+    color: #ffffff;
+}
+
+.lead {
+    color: #c7d5e0;
+}
+
+/* =========================
+   STAR RATING
+========================= */
+
+.star-rating {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.star-button {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #8f98a0;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+    .star-button:hover {
+        transform: scale(1.15);
+    }
+
+    .star-button.filled {
+        color: #f5c518;
+    }
+
+.rating-hint {
+    font-size: 0.9rem;
+    color: #8f98a0;
+}
+
+/* =========================
+   REVIEW TABLE WIDTH
+========================= */
+
+.reviews-page-wide {
+    width: 90vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+.reviews-table {
+    min-width: 1200px;
+}
+
+.actions-cell {
+    min-width: 270px;
+    white-space: nowrap;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.review-text-cell {
+    max-width: 420px;
+}
+
+.review-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.review-image-thumbnail {
+    width: 140px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #2a475e;
+    border-radius: 6px;
+}
+/* =========================
+   GAME CARD IMAGE CAROUSEL
+========================= */
+
+.game-card {
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.clickable-game-card {
+    cursor: pointer;
+}
+
+    .clickable-game-card:hover,
+    .clickable-game-card:focus {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+        border-color: #66c0f4;
+    }
+
+        .clickable-game-card:hover .card-title {
+            color: #66c0f4;
+        }
+
+.game-card-carousel {
+    position: relative;
+    background-color: #0e151f;
+    border-bottom: 1px solid #2a475e;
+}
+
+.game-card-image {
+    height: 190px;
+    object-fit: cover;
+}
+
+.game-card-placeholder {
+    height: 190px;
+    background: linear-gradient(135deg, #16202d 0%, #0e151f 100%);
+    border-bottom: 1px solid #2a475e;
+    color: #8f98a0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+.game-image-count {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    background-color: rgba(23, 26, 33, 0.85);
+    color: #c7d5e0;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 15%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(23, 26, 33, 0.75);
+    border-radius: 50%;
+    padding: 12px;
+}
+
+/* =========================
+   GAME CARD AVG RATING
+========================= */
+
+.game-average-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #c7d5e0;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.rating-star {
+    color: #f5c518;
+    font-size: 1.1rem;
+}
+
+.game-average-rating small {
+    color: #8f98a0;
+    font-weight: 400;
+}
+
+.no-rating {
+    color: #8f98a0;
+    font-size: 0.9rem;
+}

@@ -1,0 +1,73 @@
+@* This Razor view displays the admin game list with search/filter controls and management actions. *@
+@model IEnumerable<WebApp.ViewModels.GameViewModel>
+
+@{
+    ViewData["Title"] = "Games";
+}
+
+<h1>Games</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="row">
+        <div class="col-md-4">
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search by game name" />
+        </div>
+        <div class="col-md-4">
+            <select name="gameTypeId" class="form-control" asp-items="ViewBag.GameTypeId">
+                <option value="">All game types</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-action="Index" class="btn btn-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>@Html.DisplayNameFor(model => model.ReleaseDate)</th>
+            <th>@Html.DisplayNameFor(model => model.Developer)</th>
+            <th>@Html.DisplayNameFor(model => model.GameTypeName)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            <td>@Html.DisplayFor(modelItem => item.ReleaseDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.Developer)</td>
+            <td>@Html.DisplayFor(modelItem => item.GameTypeName)</td>
+            <td class="text-nowrap">
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<div class="mt-3">
+    @if (ViewBag.Page > 1)
+    {
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-search="@ViewBag.Search" asp-route-gameTypeId="@ViewBag.GameTypeId" asp-route-page="@(ViewBag.Page - 1)">Previous</a>
+    }
+
+    <span class="mx-2">Page @ViewBag.Page of @ViewBag.TotalPages</span>
+
+    @if (ViewBag.Page < ViewBag.TotalPages)
+    {
+        <a class="btn btn-outline-primary" asp-action="Index" asp-route-search="@ViewBag.Search" asp-route-gameTypeId="@ViewBag.GameTypeId" asp-route-page="@(ViewBag.Page + 1)">Next</a>
+    }
+</div>

@@ -1,0 +1,109 @@
+@* This Razor view displays the admin list of reviews with approve, reject, edit, details, and delete actions. *@
+@model IEnumerable<WebApp.ViewModels.ReviewViewModel>
+
+@{
+    ViewData["Title"] = "Reviews";
+}
+
+<style>
+    .reviews-page-wide {
+        width: 90vw;
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .reviews-table {
+        min-width: 1200px;
+    }
+
+    .actions-cell {
+        min-width: 270px;
+        white-space: nowrap;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .review-text-cell {
+        max-width: 420px;
+    }
+</style>
+
+<div class="reviews-page-wide">
+    <h1>Reviews</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle reviews-table">
+            <thead>
+                <tr>
+                    <th>Rating</th>
+                    <th>Review Text</th>
+                    <th>Approved</th>
+                    <th>Created At</th>
+                    <th>Game</th>
+                    <th>User</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Rating</td>
+
+                        <td class="review-text-cell">@item.ReviewText</td>
+
+                        <td>
+                            @if (item.Approved)
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                        </td>
+
+                        <td>@item.CreatedAt</td>
+
+                        <td>@item.GameName</td>
+
+                        <td>@item.Username</td>
+
+                        <td class="actions-cell">
+                            <div class="action-buttons">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+
+                                @if (item.Approved)
+                                {
+                                    <form asp-action="Reject" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-warning">Reject</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="Approve" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

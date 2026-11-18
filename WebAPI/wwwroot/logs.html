@@ -1,0 +1,171 @@
+<!-- This static test page lets a developer request and view recent API log records from the browser. -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Application Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        select, button {
+            padding: 8px 12px;
+            margin-left: 8px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout {
+            background: #dc2626;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        th, td {
+            border-bottom: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+        }
+
+        .error {
+            color: #b91c1c;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body onload="loadLogs()">
+    <div class="container">
+        <div class="top-bar">
+            <div>
+                <h1>Application Logs</h1>
+                <p id="userInfo"></p>
+            </div>
+
+            <div>
+                <label>Show last:</label>
+                <select id="logCount" onchange="loadLogs()">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </select>
+
+                <button onclick="loadLogs()">Refresh</button>
+                <button class="logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div id="message" class="error"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Timestamp</th>
+                    <th>Level</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody id="logsTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadLogs() {
+            const token = localStorage.getItem("jwtToken");
+            const username = localStorage.getItem("username");
+            const role = localStorage.getItem("role");
+
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("userInfo").textContent =
+                "Logged in as: " + username + " (" + role + ")";
+
+            const count = document.getElementById("logCount").value;
+            const message = document.getElementById("message");
+            const tableBody = document.getElementById("logsTableBody");
+
+            message.textContent = "";
+            tableBody.innerHTML = "";
+
+            try {
+                const response = await fetch("/api/Logs/get/" + count, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.clear();
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    message.textContent = "Could not load logs.";
+                    return;
+                }
+
+                const logs = await response.json();
+
+                logs.forEach(log => {
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                        <td>${log.id}</td>
+                        <td>${log.timestamp}</td>
+                        <td>${log.level}</td>
+                        <td>${log.message}</td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                message.textContent = "Error while loading logs.";
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

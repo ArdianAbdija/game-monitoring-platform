@@ -1,0 +1,224 @@
+@* This Razor view displays one game in detail, including reviews, ratings, images, and the review submission form. *@
+@model WebApp.ViewModels.GameViewModel
+
+@{
+    ViewData["Title"] = "Game Details";
+}
+
+<h1>@Model.Name</h1>
+
+<div class="card p-4 mt-3">
+    <p>
+        <strong>Description:</strong> @Model.Description
+    </p>
+
+    <p>
+        <strong>Developer:</strong> @Model.Developer
+    </p>
+
+    <p>
+        <strong>Release Date:</strong> @Model.ReleaseDate
+    </p>
+
+    <p>
+        <strong>Game Type:</strong> @Model.GameTypeName
+    </p>
+
+    <p>
+        <strong>Genres:</strong>
+        @if (Model.Genres.Any())
+        {
+            @string.Join(", ", Model.Genres.Select(g => g.Name))
+        }
+        else
+        {
+            <span>No genres assigned</span>
+        }
+    </p>
+</div>
+
+<h3 class="mt-4">Submit Review</h3>
+
+@if (TempData["ReviewSuccess"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["ReviewSuccess"]
+    </div>
+}
+
+@if (TempData["ReviewError"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ReviewError"]
+    </div>
+}
+
+<div class="card p-4 mt-3">
+    <form asp-action="SubmitReview"
+          method="post"
+          enctype="multipart/form-data"
+          onsubmit="return validateRating()">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="gameId" value="@Model.Id" />
+        <input type="hidden" id="rating" name="rating" value="" />
+
+        <div class="mb-3">
+            <label class="form-label">Rating</label>
+
+            <div class="star-rating" id="starRating">
+                @for (int i = 1; i <= 10; i++)
+                {
+                    <button type="button"
+                            class="star-button"
+                            onclick="setRating(@i)"
+                            onmouseover="previewRating(@i)"
+                            onmouseout="restoreRating()"
+                            data-value="@i">
+                        ☆
+                    </button>
+                }
+            </div>
+
+            <div class="rating-hint" id="ratingText">
+                Choose a rating from 1 to 10.
+            </div>
+
+            <div class="text-danger mt-1" id="ratingError"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Review</label>
+            <textarea name="reviewText"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Write your review..."></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Review Images</label>
+            <input type="file"
+                   name="reviewImages"
+                   class="form-control"
+                   accept="image/*"
+                   multiple />
+
+            <small class="text-muted">
+                You can upload one or more images with your review.
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Submit Review
+        </button>
+    </form>
+</div>
+
+<h3 class="mt-4">Approved Reviews</h3>
+
+@if (Model.Reviews.Any(r => r.Approved))
+{
+    <div class="mt-3">
+        @foreach (var review in Model.Reviews.Where(r => r.Approved).OrderByDescending(r => r.CreatedAt))
+        {
+            <div class="card p-3 mb-3">
+                <p>
+                    <strong>@review.Username</strong>
+                    rated this game <strong>@review.Rating/10</strong>
+                </p>
+
+                <p>
+                    @for (int i = 1; i <= 10; i++)
+                    {
+                        if (i <= review.Rating)
+                        {
+                            <span style="color: #f5c518;">★</span>
+                        }
+                        else
+                        {
+                            <span style="color: #8f98a0;">☆</span>
+                        }
+                    }
+                </p>
+
+                @if (!string.IsNullOrWhiteSpace(review.ReviewText))
+                {
+                    <p>@review.ReviewText</p>
+                }
+
+                @if (review.ReviewImages != null && review.ReviewImages.Any())
+                {
+                    <div class="review-images mt-3">
+                        @foreach (var image in review.ReviewImages)
+                        {
+                            <img src="@image.Url"
+                                 alt="Review image"
+                                 class="review-image-thumbnail" />
+                        }
+                    </div>
+                }
+
+                <small class="text-muted d-block mt-2">
+                    @review.CreatedAt
+                </small>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No approved reviews yet.</p>
+}
+
+<a asp-action="Index" class="btn btn-secondary mt-3">
+    Back to Browse
+</a>
+
+@section Scripts {
+    <script>
+        let selectedRating = 0;
+
+        function setRating(value) {
+            selectedRating = value;
+            document.getElementById("rating").value = value;
+            document.getElementById("ratingError").textContent = "";
+            updateStars(value);
+            document.getElementById("ratingText").textContent = value + "/10 selected";
+        }
+
+        function previewRating(value) {
+            updateStars(value);
+        }
+
+        function restoreRating() {
+            updateStars(selectedRating);
+        }
+
+        function updateStars(value) {
+            const stars = document.querySelectorAll(".star-button");
+
+            stars.forEach(star => {
+                const starValue = parseInt(star.getAttribute("data-value"));
+
+                if (starValue <= value) {
+                    star.textContent = "★";
+                    star.classList.add("filled");
+                } else {
+                    star.textContent = "☆";
+                    star.classList.remove("filled");
+                }
+            });
+        }
+
+        function validateRating() {
+            if (selectedRating < 1 || selectedRating > 10) {
+                document.getElementById("ratingError").textContent =
+                    "Please select a rating before submitting.";
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+}

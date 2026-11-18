@@ -1,0 +1,14 @@
+* text=auto
+*.cs text
+*.cshtml text
+*.csproj text
+*.sln text
+*.json text
+*.sql text
+*.md text
+*.ico binary
+*.jpg binary
+*.png binary
+
+# Bundled third-party browser libraries are not original application code.
+WebApp/wwwroot/lib/** linguist-vendored

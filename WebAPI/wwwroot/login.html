@@ -1,0 +1,117 @@
+<!-- This static test page lets a developer log in against the WebAPI and copy the returned JWT token. -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Log Viewer Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .error {
+            color: #b91c1c;
+            margin-top: 12px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>Log Viewer Login</h1>
+
+        <label>Username</label>
+        <input type="text" id="username" />
+
+        <label>Password</label>
+        <input type="password" id="password" />
+
+        <button onclick="login()">Login</button>
+
+        <div id="message" class="error"></div>
+    </div>
+
+    <script>
+        async function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const message = document.getElementById("message");
+
+            message.textContent = "";
+
+            try {
+                const response = await fetch("/api/Auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                if (!response.ok) {
+                    message.textContent = "Invalid username or password.";
+                    return;
+                }
+
+                const data = await response.json();
+
+                localStorage.setItem("jwtToken", data.token);
+                localStorage.setItem("username", data.username);
+                localStorage.setItem("role", data.role);
+
+                window.location.href = "logs.html";
+            } catch (error) {
+                message.textContent = "Login failed.";
+            }
+        }
+    </script>
+</body>
+</html>

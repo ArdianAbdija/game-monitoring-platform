@@ -1,0 +1,39 @@
+@* This Razor view displays the MVC home page for the application. *@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4">Game Monitoring Platform</h1>
+
+    <p class="lead mt-3">
+        Browse games, explore genres, and read player reviews.
+    </p>
+
+    <a asp-controller="Browse" asp-action="Index" class="btn btn-primary btn-lg mt-3">
+        Browse Games
+    </a>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h4>Games</h4>
+            <p>View available games and their details.</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h4>Genres</h4>
+            <p>Explore games by genre and category.</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h4>Reviews</h4>
+            <p>Read user ratings and review submissions.</p>
+        </div>
+    </div>
+</div>
